@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>한국석유공업 방수공법 표준 소요량 산출 서비스</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --bg: #f3f5f9;
+        --panel: #ffffff;
+        --panel-alt: #eef3f8;
+        --border: #dfe6ee;
+        --primary: #113d7a;
+        --primary-soft: #dfeafc;
+        --secondary: #4d6fa8;
+        --text: #1c2430;
+        --muted: #5d6a7c;
+        --success: #1f8f56;
+        --warning: #d88d2b;
+        --danger: #bf4d4d;
+        --shadow: 0 12px 30px rgba(12, 29, 52, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+      }
+
+      .app-shell {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 32px 18px 130px;
+      }
+
+      .header-bar {
+        background: linear-gradient(135deg, #0f2f5d, #1d4d87 35%, #235fa4 100%);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        padding: 22px 28px;
+        color: white;
+      }
+
+      .header-title {
+        font-size: clamp(1.4rem, 2.1vw, 2.2rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+      }
+
+      .header-sub {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.92rem;
+        margin-top: 8px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .panel-header {
+        padding: 20px 22px 16px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, #f7f9fd, #f2f6fb);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+      }
+
+      .section-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.0rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+
+      .section-label .badge {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 0.8rem;
+      }
+
+      .panel-body { padding: 22px; }
+
+      .field-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .field-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .field-label {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      select, input {
+        width: 100%;
+        border: 1px solid #ccd7e6;
+        border-radius: 12px;
+        background: #f9fbff;
+        color: var(--text);
+        padding: 12px 14px;
+        font-size: 0.96rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      select:focus, input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(17, 61, 122, 0.12);
+      }
+
+      .radio-group {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        border: 1px solid #ccd7e6;
+        background: #f9fbff;
+        border-radius: 12px;
+        padding: 8px 12px;
+        min-height: 48px;
+      }
+
+      .radio-option {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--muted);
+      }
+
+      .radio-option input {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--primary);
+      }
+
+      .pyung-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 18px;
+        padding: 10px 14px;
+        background: #f5f9ff;
+        border: 1px solid var(--primary-soft);
+        border-radius: 12px;
+        color: var(--secondary);
+        font-size: 0.9rem;
+      }
+
+      .pyung-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: white;
+        border: 1px solid #cfe1ff;
+        border-radius: 10px;
+        padding: 7px 10px;
+      }
+
+      .pyung-box input {
+        border: none;
+        background: transparent;
+        width: 60px;
+        padding: 0;
+        font-size: 0.95rem;
+        text-align: right;
+      }
+
+      .calc-button {
+        margin-top: 20px;
+        width: 100%;
+        background: linear-gradient(135deg, #123d78, #1d5ba7);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 20px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 8px 20px rgba(20, 60, 112, 0.18);
+      }
+
+      .calc-button:hover { transform: translateY(-1px); }
+
+      .result-card {
+        margin-top: 30px;
+      }
+
+      .result-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 18px 22px 0;
+      }
+
+      .summary-pill {
+        flex: 1 1 180px;
+        background: #f7f9fd;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px 12px;
+      }
+
+      .summary-pill .label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.72rem;
+        margin-bottom: 4px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .summary-pill .value {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+      }
+
+      th, td {
+        padding: 12px 10px;
+        text-align: left;
+        border-bottom: 1px solid #e7edf5;
+        vertical-align: middle;
+      }
+
+      th {
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #6a7380;
+        background: #f8fafd;
+      }
+
+      td {
+        font-size: 0.94rem;
+      }
+
+      .chip {
+        display: inline-block;
+        background: #eef5ff;
+        color: var(--primary);
+        border: 1px solid #dbeaff;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .detail-toggle {
+        border: 1px solid var(--border);
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 0;
+        margin-top: 22px;
+        overflow: hidden;
+      }
+
+      .detail-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        border: none;
+        background: transparent;
+        padding: 16px 18px;
+        cursor: pointer;
+        font-weight: 800;
+        color: var(--primary);
+      }
+
+      .detail-body {
+        border-top: 1px solid var(--border);
+        padding: 18px;
+        display: none;
+      }
+
+      .detail-toggle.open .detail-body { display: block; }
+
+      .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .detail-panel {
+        background: #f9fbff;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px 14px;
+      }
+
+      .detail-panel h4 {
+        margin: 0 0 10px;
+        font-size: 0.9rem;
+        color: var(--primary);
+      }
+
+      .mini-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .mini-table th, .mini-table td {
+        font-size: 0.8rem;
+        padding: 8px 10px;
+      }
+
+      .hide-on-print {
+        display: block;
+      }
+
+      .fixed-disclaimer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(12, 27, 47, 0.96);
+        color: rgba(255,255,255,0.88);
+        border-top: 1px solid rgba(255,255,255,0.12);
+        padding: 12px 16px;
+        z-index: 20;
+      }
+
+      .disclaimer-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        font-size: 0.82rem;
+        line-height: 1.5;
+      }
+
+      .action-row {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .action-btn {
+        border: 1px solid var(--primary);
+        background: white;
+        color: var(--primary);
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .action-btn.primary {
+        background: var(--primary);
+        color: white;
+      }
+
+      @media (max-width: 860px) {
+        .field-grid,
+        .detail-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .hide-on-print,
+        .fixed-disclaimer,
+        .action-row {
+          display: none !important;
+        }
+
+        .app-shell {
+          padding-bottom: 20px;
+        }
+
+        .card {
+          box-shadow: none;
+          border-color: #cfd9e5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="header-bar">
+        <div class="header-title">한국석유공업 방수공법 표준 소요량 산출 서비스</div>
+        <div class="header-sub">FM 표준 기준 · 포장 단위 올림 계산 · 발주 수량 산출</div>
+      </header>
+
+      <section class="card" style="margin-top: 26px;">
+        <div class="panel-header">
+          <div class="section-label"><span class="badge">1</span> 공법 및 면적 선택</div>
+        </div>
+        <div class="panel-body">
+          <div class="field-grid">
+            <div class="field-wrap">
+              <label class="field-label">용도 선택</label>
+              <div class="radio-group" id="purposeGroup">
+                <label class="radio-option">
+                  <input type="radio" name="purpose" value="EXPOSED" checked />
+                  <span>노출형</span>
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="purpose" value="NON_EXPOSED" />
+                  <span>비노출</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <label class="field-label" for="methodSelect">공법 선택</label>
+              <select id="methodSelect"></select>
+            </div>
+
+            <div class="field-wrap">
+              <label class="field-label" for="specSelect">세부 사양 선택</label>
+              <select id="specSelect"></select>
+            </div>
+          </div>
+
+          <div class="field-grid" style="margin-top: 22px;">
+            <div class="field-wrap">
+              <label class="field-label" for="floorArea">바닥 면적 (m²)</label>
+              <input id="floorArea" type="number" min="0" step="0.01" value="100" />
+            </div>
+            <div class="field-wrap">
+              <label class="field-label" for="wallArea">벽체 / 수직 면적 (m²)</label>
+              <input id="wallArea" type="number" min="0" step="0.01" value="20" />
+            </div>
+            <div class="field-wrap" style="visibility: hidden; pointer-events: none;">
+              <label class="field-label">&nbsp;</label>
+              <div class="pyung-box">
+                <input type="text" value="" aria-hidden="true" />
+              </div>
+            </div>
+          </div>
+
+          <button class="calc-button hide-on-print" id="calculateBtn">FM 표준 소요량 계산하기</button>
+        </div>
+      </section>
+
+      <section class="card result-card" id="resultSection">
+        <div class="panel-header">
+          <div class="section-label"><span class="badge">2</span> 산출 결과</div>
+        </div>
+
+        <div class="panel-body">
+          <div style="font-size: 0.9rem; color: var(--muted); margin-bottom: 10px;">
+            본 결과는 한국석유공업 공식 품셈표 기준 및 표준 포장 단위(올림 적용) 기준으로 산출됩니다.
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Category</th>
+                <th>Theoretical FM Qty</th>
+                <th>Package Spec</th>
+                <th>Final Order Qty</th>
+              </tr>
+            </thead>
+            <tbody id="resultTableBody"></tbody>
+          </table>
+
+          <div class="action-row hide-on-print">
+            <button class="action-btn primary" id="printBtn">Print</button>
+            <button class="action-btn" id="pdfBtn">PDF Download</button>
+            <button class="action-btn" id="copyBtn">Copy Result</button>
+          </div>
+
+          <div class="detail-toggle" id="detailToggle">
+            <button class="detail-header" type="button" aria-expanded="false">
+              <span>Labor & Tool Loss Calculation Details</span>
+              <span id="toggleSymbol">▸</span>
+            </button>
+            <div class="detail-body">
+              <div class="detail-grid">
+                <div class="detail-panel">
+                  <h4>인건비 산출 상세</h4>
+                  <table class="mini-table">
+                    <thead>
+                      <tr>
+                        <th>직군</th>
+                        <th>인력 수</th>
+                        <th>단가</th>
+                        <th>금액</th>
+                      </tr>
+                    </thead>
+                    <tbody id="laborDetailBody"></tbody>
+                  </table>
+                </div>
+                <div class="detail-panel">
+                  <h4>공구손료 및 비용 내역</h4>
+                  <table class="mini-table">
+                    <tbody id="toolDetailBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="fixed-disclaimer">
+      <div class="disclaimer-inner">
+        Disclaimer: 본 계산 결과는 한국석유공업 공시 표준 규격 및 품셈표 기준에 따른 산출이며, 현장 조건, 시공 방식, 부자재 사양, 납기 및 별도 설계 기준에 따라 최종 수량은 변경될 수 있습니다.
+      </div>
+    </div>
+
+    <script>
+      const data = {
+        methods: [
+          {
+            method_id: 'KP_M300_EXPOSED',
+            method_name: 'KP-M300 도막방수공법',
+            usage: 'EXPOSED',
+            thickness: { floor: '3.0mm', wall: '2.0mm' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_KP_L', item_name: 'KP-L', category: '하도', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 0.40, unit_price: 5400, package_unit: '캔', package_size: 16 },
+              { item_code: 'MAT_M300R', item_name: 'KP-M300R(중도)', category: '중도', unit: 'kg', floor_qty_per_m2: 4.80, wall_qty_per_m2: 0.00, unit_price: 5500, package_unit: '세트', package_size: 20 },
+              { item_code: 'MAT_M250W', item_name: 'KP-M250W(수직용)', category: '수직용', unit: 'kg', floor_qty_per_m2: 0.00, wall_qty_per_m2: 2.80, unit_price: 6000, package_unit: '세트', package_size: 20 },
+              { item_code: 'MAT_KP_H', item_name: 'KP-H(상도)', category: '상도', unit: 'kg', floor_qty_per_m2: 0.30, wall_qty_per_m2: 0.30, unit_price: 7800, package_unit: '세트', package_size: 15 },
+              { item_code: 'MAT_THINNER', item_name: 'KP-신나', category: '희석제', unit: 'kg', floor_qty_per_m2: 0.04, wall_qty_per_m2: 0.04, unit_price: 3600, package_unit: '통', package_size: 14 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.053, wall_qty_per_m2: 0.066, unit_price: 228286 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.028, wall_qty_per_m2: 0.036, unit_price: 172068 }
+            ]
+          },
+          {
+            method_id: 'DEWS_NON_EXPOSED_NW23_ASBOND',
+            method_name: '듀스(DEWS) 복합방수공법',
+            usage: 'NON_EXPOSED',
+            thickness: { floor: '4.0mm (도막 1.7mm, 시트 2.3mm)', wall: '2.0mm (도막 2mm)' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_MP_NW_23', item_name: 'MP-NW(2.3mm)', category: '방수시트', unit: 'm2', floor_qty_per_m2: 1.05, wall_qty_per_m2: 0.00, unit_price: 12000, package_unit: '롤', package_size: 10 },
+              { item_code: 'MAT_KP_L', item_name: 'KP-L', category: '하도', unit: 'kg', floor_qty_per_m2: 0.00, wall_qty_per_m2: 0.40, unit_price: 5400, package_unit: '캔', package_size: 16 },
+              { item_code: 'MAT_AS_BOND', item_name: 'AS-BOND', category: '시트접착제', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 0.00, unit_price: 4200, package_unit: '통', package_size: 18 },
+              { item_code: 'MAT_KP_NT', item_name: 'KP-NT(중도)', category: '중도방수', unit: 'kg', floor_qty_per_m2: 2.70, wall_qty_per_m2: 0.00, unit_price: 5300, package_unit: '세트', package_size: 20 },
+              { item_code: 'MAT_KP_S500', item_name: 'KP-S500(우레탄 실란트)', category: '실란트', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 0.00, unit_price: 6000, package_unit: '통', package_size: 10 },
+              { item_code: 'MAT_M250W2', item_name: 'KP-M250W2(수직용)', category: '수직용', unit: 'kg', floor_qty_per_m2: 0.00, wall_qty_per_m2: 2.80, unit_price: 6000, package_unit: '세트', package_size: 20 },
+              { item_code: 'MAT_TAPE_FLOOR', item_name: '보강테이프(바닥용)', category: '보강재', unit: 'm', floor_qty_per_m2: 1.20, wall_qty_per_m2: 0.00, unit_price: 650, package_unit: '롤', package_size: 50 },
+              { item_code: 'MAT_TAPE_WALL', item_name: '보강테이프(벽체용)', category: '보강재', unit: 'm', floor_qty_per_m2: 0.00, wall_qty_per_m2: 1.20, unit_price: 650, package_unit: '롤', package_size: 50 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.115, wall_qty_per_m2: 0.132, unit_price: 228286 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.065, wall_qty_per_m2: 0.072, unit_price: 172068 }
+            ]
+          },
+          {
+            method_id: 'BLACK_EZ_ONE_NON_EXPOSED',
+            method_name: '블랙이지원(BLACK EZ ONE) 복합방수공법',
+            usage: 'NON_EXPOSED',
+            thickness: { floor: '3.0mm (도막 1mm, 시트 2mm)', wall: '2.0mm (도막 2mm)' },
+            tool_loss_rate: 0.05,
+            materials: [
+              { item_code: 'MAT_EZ_SHEET', item_name: 'BLACK EZ ONE SHEET (2mm)', category: '방수시트', unit: 'm2', floor_qty_per_m2: 1.05, wall_qty_per_m2: 0.00, unit_price: 12200, package_unit: '롤', package_size: 10 },
+              { item_code: 'MAT_KP_L', item_name: 'KP-L', category: '하도', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 0.40, unit_price: 5400, package_unit: '캔', package_size: 16 },
+              { item_code: 'MAT_EZ_COAT', item_name: 'BLACK EZ ONE COAT', category: '코트재', unit: 'kg', floor_qty_per_m2: 1.20, wall_qty_per_m2: 0.00, unit_price: 8400, package_unit: '통', package_size: 18 },
+              { item_code: 'MAT_M400W', item_name: 'KP-M400W', category: '보강/수직용', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 2.80, unit_price: 6000, package_unit: '세트', package_size: 20 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.090, wall_qty_per_m2: 0.051, unit_price: 228286 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.052, wall_qty_per_m2: 0.029, unit_price: 172068 }
+            ]
+          },
+          {
+            method_id: 'MP_T_20_NON_EXPOSED',
+            method_name: 'MP-T 시트방수공법 (2.0mm)',
+            usage: 'NON_EXPOSED',
+            thickness: { floor: '2.0mm', wall: '2.0mm' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_MP_T_20', item_name: 'MP-T(2.0mm)', category: '방수시트', unit: 'm2', floor_qty_per_m2: 1.15, wall_qty_per_m2: 1.20, unit_price: 12200, package_unit: '롤', package_size: 10 },
+              { item_code: 'MAT_AS_BOND', item_name: 'AS-BOND', category: '시트접착제', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 0.40, unit_price: 4200, package_unit: '통', package_size: 18 },
+              { item_code: 'MAT_LPG', item_name: '연료(LPG)', category: '연료', unit: 'kg', floor_qty_per_m2: 0.08, wall_qty_per_m2: 0.08, unit_price: 2620, package_unit: '통', package_size: 20 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.071, wall_qty_per_m2: 0.091, unit_price: 228286 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.035, wall_qty_per_m2: 0.045, unit_price: 172068 }
+            ]
+          },
+          {
+            method_id: 'DEWS_EXPOSED_NWS_2T',
+            method_name: '듀스(DEWS) 노출형 NWS 2T',
+            usage: 'EXPOSED',
+            thickness: { floor: '2.0mm', wall: '2.0mm' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_NWS_20', item_name: 'NWS(2.0mm)', category: '방수시트', unit: 'm2', floor_qty_per_m2: 1.00, wall_qty_per_m2: 1.00, unit_price: 0, package_unit: '롤', package_size: 10 },
+              { item_code: 'MAT_KP_L', item_name: 'KP-L', category: '하도', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 0.40, unit_price: 0, package_unit: '캔', package_size: 16 },
+              { item_code: 'MAT_KP_H', item_name: 'KP-H(상도)', category: '상도', unit: 'kg', floor_qty_per_m2: 0.35, wall_qty_per_m2: 0.35, unit_price: 0, package_unit: '세트', package_size: 15 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.058, wall_qty_per_m2: 0.068, unit_price: 0 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.030, wall_qty_per_m2: 0.038, unit_price: 0 }
+            ]
+          },
+          {
+            method_id: 'DEWS_EXPOSED_NWS_23T',
+            method_name: '듀스(DEWS) 노출형 NWS 2.3T',
+            usage: 'EXPOSED',
+            thickness: { floor: '2.3mm', wall: '2.3mm' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_NWS_23', item_name: 'NWS(2.3mm)', category: '방수시트', unit: 'm2', floor_qty_per_m2: 1.08, wall_qty_per_m2: 1.08, unit_price: 0, package_unit: '롤', package_size: 10 },
+              { item_code: 'MAT_KP_L', item_name: 'KP-L', category: '하도', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 0.40, unit_price: 0, package_unit: '캔', package_size: 16 },
+              { item_code: 'MAT_KP_H', item_name: 'KP-H(상도)', category: '상도', unit: 'kg', floor_qty_per_m2: 0.35, wall_qty_per_m2: 0.35, unit_price: 0, package_unit: '세트', package_size: 15 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.062, wall_qty_per_m2: 0.072, unit_price: 0 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.032, wall_qty_per_m2: 0.040, unit_price: 0 }
+            ]
+          },
+          {
+            method_id: 'DEWS_EXPOSED_2NW_23T',
+            method_name: '듀스(DEWS) 노출형 2NW 2.3T',
+            usage: 'EXPOSED',
+            thickness: { floor: '2.3mm', wall: '2.3mm' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_2NW_23', item_name: '2NW(2.3mm)', category: '방수시트', unit: 'm2', floor_qty_per_m2: 1.10, wall_qty_per_m2: 1.10, unit_price: 0, package_unit: '롤', package_size: 10 },
+              { item_code: 'MAT_KP_L', item_name: 'KP-L', category: '하도', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 0.40, unit_price: 0, package_unit: '캔', package_size: 16 },
+              { item_code: 'MAT_KP_H', item_name: 'KP-H(상도)', category: '상도', unit: 'kg', floor_qty_per_m2: 0.38, wall_qty_per_m2: 0.38, unit_price: 0, package_unit: '세트', package_size: 15 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.066, wall_qty_per_m2: 0.076, unit_price: 0 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.034, wall_qty_per_m2: 0.042, unit_price: 0 }
+            ]
+          },
+          {
+            method_id: 'KP_EXPOSED_PU400_EMF',
+            method_name: '노출 우레탄 KP-M300 PU400-EMF',
+            usage: 'EXPOSED',
+            thickness: { floor: '2.0mm', wall: '2.0mm' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_KP_L', item_name: 'KP-L', category: '하도', unit: 'kg', floor_qty_per_m2: 0.35, wall_qty_per_m2: 0.35, unit_price: 0, package_unit: '캔', package_size: 16 },
+              { item_code: 'MAT_KP_M300', item_name: 'KP-M300(우레탄)', category: '도막', unit: 'kg', floor_qty_per_m2: 1.20, wall_qty_per_m2: 1.20, unit_price: 0, package_unit: '세트', package_size: 20 },
+              { item_code: 'MAT_PU_TOPCOAT', item_name: 'PU 상도/마감', category: '상도', unit: 'kg', floor_qty_per_m2: 0.30, wall_qty_per_m2: 0.30, unit_price: 0, package_unit: '세트', package_size: 15 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.070, wall_qty_per_m2: 0.078, unit_price: 0 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.038, wall_qty_per_m2: 0.046, unit_price: 0 }
+            ]
+          },
+          {
+            method_id: 'DEWS_NON_EXPOSED_NW2T_MULTIB',
+            method_name: '듀스(DEWS) 비노출 NW 2T (멀티B)',
+            usage: 'NON_EXPOSED',
+            thickness: { floor: '2.0mm', wall: '2.0mm' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_NW2T_SHEET', item_name: 'NW 2T 시트', category: '방수시트', unit: 'm2', floor_qty_per_m2: 1.00, wall_qty_per_m2: 0.00, unit_price: 0, package_unit: '롤', package_size: 10 },
+              { item_code: 'MAT_KP_L', item_name: 'KP-L', category: '하도', unit: 'kg', floor_qty_per_m2: 0.35, wall_qty_per_m2: 0.35, unit_price: 0, package_unit: '캔', package_size: 16 },
+              { item_code: 'MAT_MULTIB', item_name: '멀티B', category: '부자재', unit: 'kg', floor_qty_per_m2: 0.45, wall_qty_per_m2: 0.00, unit_price: 0, package_unit: '통', package_size: 18 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.105, wall_qty_per_m2: 0.118, unit_price: 0 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.058, wall_qty_per_m2: 0.068, unit_price: 0 }
+            ]
+          },
+          {
+            method_id: 'DEWS_NON_EXPOSED_NW23_MULTIB',
+            method_name: '듀스(DEWS) 비노출 NW 2.3T (멀티B)',
+            usage: 'NON_EXPOSED',
+            thickness: { floor: '2.3mm', wall: '2.3mm' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_NW23_SHEET', item_name: 'NW 2.3T 시트', category: '방수시트', unit: 'm2', floor_qty_per_m2: 1.06, wall_qty_per_m2: 0.00, unit_price: 0, package_unit: '롤', package_size: 10 },
+              { item_code: 'MAT_KP_L', item_name: 'KP-L', category: '하도', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 0.40, unit_price: 0, package_unit: '캔', package_size: 16 },
+              { item_code: 'MAT_MULTIB', item_name: '멀티B', category: '부자재', unit: 'kg', floor_qty_per_m2: 0.50, wall_qty_per_m2: 0.00, unit_price: 0, package_unit: '통', package_size: 18 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.110, wall_qty_per_m2: 0.126, unit_price: 0 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.062, wall_qty_per_m2: 0.070, unit_price: 0 }
+            ]
+          },
+          {
+            method_id: 'KP_NON_EXPOSED_PU400_NMF',
+            method_name: '비노출 우레탄 KP-NT PU400-NMF',
+            usage: 'NON_EXPOSED',
+            thickness: { floor: '2.0mm', wall: '2.0mm' },
+            tool_loss_rate: 0.05,
+            materials: [
+              { item_code: 'MAT_KP_NT', item_name: 'KP-NT', category: '중도', unit: 'kg', floor_qty_per_m2: 1.70, wall_qty_per_m2: 0.00, unit_price: 0, package_unit: '세트', package_size: 20 },
+              { item_code: 'MAT_KP_L', item_name: 'KP-L', category: '하도', unit: 'kg', floor_qty_per_m2: 0.35, wall_qty_per_m2: 0.35, unit_price: 0, package_unit: '캔', package_size: 16 },
+              { item_code: 'MAT_PU_TOP', item_name: 'PU 마감재', category: '상도', unit: 'kg', floor_qty_per_m2: 0.30, wall_qty_per_m2: 0.30, unit_price: 0, package_unit: '세트', package_size: 15 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.095, wall_qty_per_m2: 0.104, unit_price: 0 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.050, wall_qty_per_m2: 0.058, unit_price: 0 }
+            ]
+          },
+          {
+            method_id: 'MP_T_25_NON_EXPOSED',
+            method_name: 'MP-T 시트방수공법 (2.5mm)',
+            usage: 'NON_EXPOSED',
+            thickness: { floor: '2.5mm', wall: '2.5mm' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_MP_T_25', item_name: 'MP-T(2.5mm)', category: '방수시트', unit: 'm2', floor_qty_per_m2: 1.20, wall_qty_per_m2: 1.25, unit_price: 0, package_unit: '롤', package_size: 10 },
+              { item_code: 'MAT_AS_BOND', item_name: 'AS-BOND', category: '시트접착제', unit: 'kg', floor_qty_per_m2: 0.40, wall_qty_per_m2: 0.40, unit_price: 0, package_unit: '통', package_size: 18 },
+              { item_code: 'MAT_LPG', item_name: '연료(LPG)', category: '연료', unit: 'kg', floor_qty_per_m2: 0.08, wall_qty_per_m2: 0.08, unit_price: 0, package_unit: '통', package_size: 20 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.078, wall_qty_per_m2: 0.098, unit_price: 0 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.038, wall_qty_per_m2: 0.048, unit_price: 0 }
+            ]
+          },
+          {
+            method_id: 'MP_TP_30_EXPOSED',
+            method_name: 'MP-TP(FPR) 방수공법 (3.0mm)',
+            usage: 'EXPOSED',
+            thickness: { floor: '3.0mm', wall: '3.0mm' },
+            tool_loss_rate: 0.03,
+            materials: [
+              { item_code: 'MAT_MP_TP_30', item_name: 'MP-TP(3.0mm)', category: '방수시트', unit: 'm2', floor_qty_per_m2: 1.32, wall_qty_per_m2: 1.32, unit_price: 0, package_unit: '롤', package_size: 10 },
+              { item_code: 'MAT_ANTI_SLIP', item_name: '방수보강재', category: '보강재', unit: 'kg', floor_qty_per_m2: 0.25, wall_qty_per_m2: 0.00, unit_price: 0, package_unit: '통', package_size: 18 },
+              { item_code: 'MAT_LPG', item_name: '연료(LPG)', category: '연료', unit: 'kg', floor_qty_per_m2: 0.10, wall_qty_per_m2: 0.10, unit_price: 0, package_unit: '통', package_size: 20 }
+            ],
+            labors: [
+              { labor_code: 'LAB_WATERPROOF', labor_name: '방수공', unit: '인', floor_qty_per_m2: 0.080, wall_qty_per_m2: 0.090, unit_price: 0 },
+              { labor_code: 'LAB_COMMON', labor_name: '보통인부', unit: '인', floor_qty_per_m2: 0.041, wall_qty_per_m2: 0.050, unit_price: 0 }
+            ]
+          }
+        ]
+      };
+
+      const purposeRadios = document.querySelectorAll('input[name="purpose"]');
+      const methodSelect = document.getElementById('methodSelect');
+      const specSelect = document.getElementById('specSelect');
+      const floorAreaInput = document.getElementById('floorArea');
+      const wallAreaInput = document.getElementById('wallArea');
+      const resultTableBody = document.getElementById('resultTableBody');
+      const laborDetailBody = document.getElementById('laborDetailBody');
+      const toolDetailBody = document.getElementById('toolDetailBody');
+
+      function formatNumber(value) {
+        return Number(value).toLocaleString('ko-KR', { maximumFractionDigits: 2 });
+      }
+
+      function formatCurrency(value) {
+        return `${formatNumber(value)} 원`;
+      }
+
+      function getSelectedPurpose() {
+        return document.querySelector('input[name="purpose"]:checked').value;
+      }
+
+      function getFilteredMethods() {
+        return data.methods.filter((method) => method.usage === getSelectedPurpose());
+      }
+
+      function populateMethodOptions() {
+        const filtered = getFilteredMethods();
+        const selectedPurpose = getSelectedPurpose();
+        methodSelect.innerHTML = filtered.map((method) => `
+          <option value="${method.method_id}">${method.method_name}</option>
+        `).join('');
+
+        if (!filtered.length) {
+          methodSelect.disabled = true;
+          specSelect.disabled = true;
+          return;
+        }
+
+        methodSelect.disabled = false;
+        const defaultMethod = filtered[0];
+        const currentMethodId = filtered.some((method) => method.method_id === methodSelect.value)
+          ? methodSelect.value
+          : defaultMethod.method_id;
+        methodSelect.value = currentMethodId;
+        populateSpecOptions();
+      }
+
+      function populateSpecOptions() {
+        const selectedMethod = getSelectedMethod();
+        if (!selectedMethod) {
+          specSelect.innerHTML = '';
+          specSelect.disabled = true;
+          return;
+        }
+
+        const specs = [
+          { label: '기본 사양', value: 'baseline', detail: selectedMethod.thickness.floor + ' / ' + selectedMethod.thickness.wall },
+          { label: `NW ${selectedMethod.thickness.floor.includes('2.3') ? '2.3T' : '기본'}`, value: 'main', detail: selectedMethod.method_name }
+        ];
+
+        specSelect.innerHTML = specs.map((spec) => `
+          <option value="${spec.value}">${spec.label} (${spec.detail})</option>
+        `).join('');
+        specSelect.disabled = false;
+      }
+
+      function getSelectedMethod() {
+        const filtered = getFilteredMethods();
+        return filtered.find((method) => method.method_id === methodSelect.value) || filtered[0];
+      }
+
+      function calculateMaterialResults(selectedMethod, floorArea, wallArea) {
+        const rows = [];
+        let materialTotal = 0;
+
+        selectedMethod.materials.forEach((material) => {
+          const pureQty = (floorArea * material.floor_qty_per_m2) + (wallArea * material.wall_qty_per_m2);
+          const finalOrderQty = Math.ceil(pureQty / material.package_size);
+          const totalCost = finalOrderQty * material.unit_price;
+          materialTotal += totalCost;
+
+          rows.push({
+            item_name: material.item_name,
+            category: material.category,
+            theoretical_qty: pureQty,
+            package_spec: `${material.package_size} ${material.unit} / ${material.package_unit}`,
+            final_order_qty: finalOrderQty,
+            total_cost: totalCost,
+            unit: material.unit,
+            package_size: material.package_size
+          });
+        });
+
+        return { rows, materialTotal };
+      }
+
+      function calculateLaborResults(selectedMethod, floorArea, wallArea) {
+        const rows = [];
+        let laborTotal = 0;
+
+        selectedMethod.labors.forEach((labor) => {
+          const qty = (floorArea * labor.floor_qty_per_m2) + (wallArea * labor.wall_qty_per_m2);
+          const cost = qty * labor.unit_price;
+          laborTotal += cost;
+
+          rows.push({
+            labor_name: labor.labor_name,
+            manpower: qty,
+            unit_price: labor.unit_price,
+            cost
+          });
+        });
+
+        return { rows, laborTotal };
+      }
+
+      function renderResults() {
+        const selectedMethod = getSelectedMethod();
+        const floorArea = Number(floorAreaInput.value || 0);
+        const wallArea = Number(wallAreaInput.value || 0);
+
+        if (!selectedMethod) {
+          resultTableBody.innerHTML = '';
+          return;
+        }
+
+        const materialResult = calculateMaterialResults(selectedMethod, floorArea, wallArea);
+        const laborResult = calculateLaborResults(selectedMethod, floorArea, wallArea);
+        const toolLoss = materialResult.materialTotal * selectedMethod.tool_loss_rate;
+        const totalCost = materialResult.materialTotal + toolLoss + laborResult.laborTotal;
+
+        resultTableBody.innerHTML = materialResult.rows.map((row) => `
+          <tr>
+            <td><span class="chip">${row.item_name}</span></td>
+            <td>${row.category}</td>
+            <td>${formatNumber(row.theoretical_qty)} ${row.unit}</td>
+            <td>${row.package_spec}</td>
+            <td>${row.final_order_qty}</td>
+          </tr>
+        `).join('');
+
+        laborDetailBody.innerHTML = laborResult.rows.map((row) => `
+          <tr>
+            <td>${row.labor_name}</td>
+            <td>${formatNumber(row.manpower)} 인</td>
+            <td>${formatCurrency(row.unit_price)}</td>
+            <td>${formatCurrency(row.cost)}</td>
+          </tr>
+        `).join('');
+
+        toolDetailBody.innerHTML = `
+          <tr>
+            <td style="padding-bottom: 8px; color: var(--muted);">Material Total</td>
+            <td style="text-align: right; font-weight: 700;">${formatCurrency(materialResult.materialTotal)}</td>
+          </tr>
+          <tr>
+            <td style="padding-bottom: 8px; color: var(--muted);">Tool Loss Rate</td>
+            <td style="text-align: right; font-weight: 700;">${(selectedMethod.tool_loss_rate * 100).toFixed(0)}%</td>
+          </tr>
+          <tr>
+            <td style="padding-bottom: 8px; color: var(--muted);">Tool Loss Amount</td>
+            <td style="text-align: right; font-weight: 700;">${formatCurrency(toolLoss)}</td>
+          </tr>
+          <tr>
+            <td style="padding-bottom: 8px; color: var(--muted);">Labor Total</td>
+            <td style="text-align: right; font-weight: 700;">${formatCurrency(laborResult.laborTotal)}</td>
+          </tr>
+          <tr>
+            <td style="color: var(--primary); font-weight: 800;">Total Cost</td>
+            <td style="text-align: right; color: var(--primary); font-weight: 800;">${formatCurrency(totalCost)}</td>
+          </tr>
+        `;
+      }
+
+      purposeRadios.forEach((radio) => {
+        radio.addEventListener('change', () => {
+          populateMethodOptions();
+          renderResults();
+        });
+      });
+
+      methodSelect.addEventListener('change', () => {
+        populateSpecOptions();
+        renderResults();
+      });
+
+      specSelect.addEventListener('change', renderResults);
+      floorAreaInput.addEventListener('input', renderResults);
+      wallAreaInput.addEventListener('input', renderResults);
+
+      document.getElementById('calculateBtn').addEventListener('click', renderResults);
+      document.getElementById('printBtn').addEventListener('click', () => window.print());
+      document.getElementById('pdfBtn').addEventListener('click', () => window.print());
+      document.getElementById('copyBtn').addEventListener('click', async () => {
+        const selectedMethod = getSelectedMethod();
+        const floorArea = Number(floorAreaInput.value || 0);
+        const wallArea = Number(wallAreaInput.value || 0);
+        const rows = calculateMaterialResults(selectedMethod, floorArea, wallArea).rows;
+        const text = rows.map((row) => `${row.item_name} | ${row.category} | ${row.theoretical_qty.toFixed(2)} ${row.unit} | ${row.package_spec} | ${row.final_order_qty}`).join('\n');
+
+        try {
+          await navigator.clipboard.writeText(text);
+          const original = document.getElementById('copyBtn').textContent;
+          document.getElementById('copyBtn').textContent = 'Copied';
+          setTimeout(() => { document.getElementById('copyBtn').textContent = original; }, 1200);
+        } catch (error) {
+          alert('복사 기능을 사용할 수 없습니다. 브라우저 권한을 확인해 주세요.');
+        }
+      });
+
+      document.querySelector('.detail-header').addEventListener('click', () => {
+        const toggle = document.getElementById('detailToggle');
+        const symbol = document.getElementById('toggleSymbol');
+        const expanded = toggle.classList.toggle('open');
+        symbol.textContent = expanded ? '▾' : '▸';
+        document.querySelector('.detail-header').setAttribute('aria-expanded', String(expanded));
+      });
+
+      populateMethodOptions();
+      renderResults();
+    </script>
+  </body>
+</html>

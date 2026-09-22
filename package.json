@@ -1,0 +1,8 @@
+{
+  "name": "waterproof-estimator",
+  "private": true,
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "start": "python -m http.server 8000"
+  }
+}

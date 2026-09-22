@@ -1,0 +1,76 @@
+{
+  "methods": [
+    {
+      "method_id": "KP_M300_EXPOSED",
+      "method_name": "KP-M300 도막방수공법",
+      "usage": "EXPOSED",
+      "thickness": { "floor": "3.0mm", "wall": "2.0mm" },
+      "tool_loss_rate": 0.03,
+      "materials": [
+        { "item_code": "MAT_KP_L", "item_name": "KP-L", "category": "하도", "unit": "kg", "floor_qty_per_m2": 0.40, "wall_qty_per_m2": 0.40, "unit_price": 5400, "package_unit": "캔", "package_size": 16 },
+        { "item_code": "MAT_M300R", "item_name": "KP-M300R(중도)", "category": "중도", "unit": "kg", "floor_qty_per_m2": 4.80, "wall_qty_per_m2": 0.00, "unit_price": 5500, "package_unit": "세트", "package_size": 20 },
+        { "item_code": "MAT_M250W", "item_name": "KP-M250W(수직용)", "category": "수직용", "unit": "kg", "floor_qty_per_m2": 0.00, "wall_qty_per_m2": 2.80, "unit_price": 6000, "package_unit": "세트", "package_size": 20 },
+        { "item_code": "MAT_KP_H", "item_name": "KP-H(상도)", "category": "상도", "unit": "kg", "floor_qty_per_m2": 0.30, "wall_qty_per_m2": 0.30, "unit_price": 7800, "package_unit": "세트", "package_size": 15 },
+        { "item_code": "MAT_THINNER", "item_name": "KP-신나", "category": "희석제", "unit": "kg", "floor_qty_per_m2": 0.04, "wall_qty_per_m2": 0.04, "unit_price": 3600, "package_unit": "통", "package_size": 14 }
+      ],
+      "labors": [
+        { "labor_code": "LAB_WATERPROOF", "labor_name": "방수공", "unit": "인", "floor_qty_per_m2": 0.053, "wall_qty_per_m2": 0.066, "unit_price": 228286 },
+        { "labor_code": "LAB_COMMON", "labor_name": "보통인부", "unit": "인", "floor_qty_per_m2": 0.028, "wall_qty_per_m2": 0.036, "unit_price": 172068 }
+      ]
+    },
+    {
+      "method_id": "DEWS_NON_EXPOSED_NW23_ASBOND",
+      "method_name": "듀스(DEWS) 복합방수공법 (NW 2.3T, 아스본드)",
+      "usage": "NON_EXPOSED",
+      "thickness": { "floor": "4.0mm (도막 1.7mm, 시트 2.3mm)", "wall": "2.0mm (도막 2mm)" },
+      "tool_loss_rate": 0.03,
+      "materials": [
+        { "item_code": "MAT_MP_NW_23", "item_name": "MP-NW(2.3mm)", "category": "방수시트", "unit": "m2", "floor_qty_per_m2": 1.05, "wall_qty_per_m2": 0.00, "unit_price": 12000, "package_unit": "롤", "package_size": 10 },
+        { "item_code": "MAT_KP_L", "item_name": "KP-L", "category": "하도", "unit": "kg", "floor_qty_per_m2": 0.00, "wall_qty_per_m2": 0.40, "unit_price": 5400, "package_unit": "캔", "package_size": 16 },
+        { "item_code": "MAT_AS_BOND", "item_name": "AS-BOND", "category": "시트접착제", "unit": "kg", "floor_qty_per_m2": 0.40, "wall_qty_per_m2": 0.00, "unit_price": 4200, "package_unit": "통", "package_size": 18 },
+        { "item_code": "MAT_KP_NT", "item_name": "KP-NT(중도)", "category": "중도방수", "unit": "kg", "floor_qty_per_m2": 2.70, "wall_qty_per_m2": 0.00, "unit_price": 5300, "package_unit": "세트", "package_size": 20 },
+        { "item_code": "MAT_KP_S500", "item_name": "KP-S500(우레탄 실란트)", "category": "실란트", "unit": "kg", "floor_qty_per_m2": 0.40, "wall_qty_per_m2": 0.00, "unit_price": 6000, "package_unit": "통", "package_size": 10 },
+        { "item_code": "MAT_M250W2", "item_name": "KP-M250W2(수직용)", "category": "수직용", "unit": "kg", "floor_qty_per_m2": 0.00, "wall_qty_per_m2": 2.80, "unit_price": 6000, "package_unit": "세트", "package_size": 20 },
+        { "item_code": "MAT_TAPE_FLOOR", "item_name": "보강테이프(바닥용)", "category": "보강재", "unit": "m", "floor_qty_per_m2": 1.20, "wall_qty_per_m2": 0.00, "unit_price": 650, "package_unit": "롤", "package_size": 50 },
+        { "item_code": "MAT_TAPE_WALL", "item_name": "보강테이프(벽체용)", "category": "보강재", "unit": "m", "floor_qty_per_m2": 0.00, "wall_qty_per_m2": 1.20, "unit_price": 650, "package_unit": "롤", "package_size": 50 }
+      ],
+      "labors": [
+        { "labor_code": "LAB_WATERPROOF", "labor_name": "방수공", "unit": "인", "floor_qty_per_m2": 0.115, "wall_qty_per_m2": 0.132, "unit_price": 228286 },
+        { "labor_code": "LAB_COMMON", "labor_name": "보통인부", "unit": "인", "floor_qty_per_m2": 0.065, "wall_qty_per_m2": 0.072, "unit_price": 172068 }
+      ]
+    },
+    {
+      "method_id": "BLACK_EZ_ONE_NON_EXPOSED",
+      "method_name": "블랙이지원(BLACK EZ ONE) 복합방수공법",
+      "usage": "NON_EXPOSED",
+      "thickness": { "floor": "3.0mm (도막 1mm, 시트 2mm)", "wall": "2.0mm (도막 2mm)" },
+      "tool_loss_rate": 0.05,
+      "materials": [
+        { "item_code": "MAT_EZ_SHEET", "item_name": "BLACK EZ ONE SHEET (2mm)", "category": "방수시트", "unit": "m2", "floor_qty_per_m2": 1.05, "wall_qty_per_m2": 0.00, "unit_price": 12200, "package_unit": "롤", "package_size": 10 },
+        { "item_code": "MAT_KP_L", "item_name": "KP-L", "category": "하도", "unit": "kg", "floor_qty_per_m2": 0.40, "wall_qty_per_m2": 0.40, "unit_price": 5400, "package_unit": "캔", "package_size": 16 },
+        { "item_code": "MAT_EZ_COAT", "item_name": "BLACK EZ ONE COAT", "category": "코트재", "unit": "kg", "floor_qty_per_m2": 1.20, "wall_qty_per_m2": 0.00, "unit_price": 8400, "package_unit": "통", "package_size": 18 },
+        { "item_code": "MAT_M400W", "item_name": "KP-M400W", "category": "보강/수직용", "unit": "kg", "floor_qty_per_m2": 0.40, "wall_qty_per_m2": 2.80, "unit_price": 6000, "package_unit": "세트", "package_size": 20 }
+      ],
+      "labors": [
+        { "labor_code": "LAB_WATERPROOF", "labor_name": "방수공", "unit": "인", "floor_qty_per_m2": 0.090, "wall_qty_per_m2": 0.051, "unit_price": 228286 },
+        { "labor_code": "LAB_COMMON", "labor_name": "보통인부", "unit": "인", "floor_qty_per_m2": 0.052, "wall_qty_per_m2": 0.029, "unit_price": 172068 }
+      ]
+    },
+    {
+      "method_id": "MP_T_20_NON_EXPOSED",
+      "method_name": "MP-T 시트방수공법 (2.0mm)",
+      "usage": "NON_EXPOSED",
+      "thickness": { "floor": "2.0mm", "wall": "2.0mm" },
+      "tool_loss_rate": 0.03,
+      "materials": [
+        { "item_code": "MAT_MP_T_20", "item_name": "MP-T(2.0mm)", "category": "방수시트", "unit": "m2", "floor_qty_per_m2": 1.15, "wall_qty_per_m2": 1.20, "unit_price": 12200, "package_unit": "롤", "package_size": 10 },
+        { "item_code": "MAT_AS_BOND", "item_name": "AS-BOND", "category": "시트접착제", "unit": "kg", "floor_qty_per_m2": 0.40, "wall_qty_per_m2": 0.40, "unit_price": 4200, "package_unit": "통", "package_size": 18 },
+        { "item_code": "MAT_LPG", "item_name": "연료(LPG)", "category": "연료", "unit": "kg", "floor_qty_per_m2": 0.08, "wall_qty_per_m2": 0.08, "unit_price": 2620, "package_unit": "통", "package_size": 20 }
+      ],
+      "labors": [
+        { "labor_code": "LAB_WATERPROOF", "labor_name": "방수공", "unit": "인", "floor_qty_per_m2": 0.071, "wall_qty_per_m2": 0.091, "unit_price": 228286 },
+        { "labor_code": "LAB_COMMON", "labor_name": "보통인부", "unit": "인", "floor_qty_per_m2": 0.035, "wall_qty_per_m2": 0.045, "unit_price": 172068 }
+      ]
+    }
+  ]
+}

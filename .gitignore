@@ -1,0 +1,6 @@
+.vercel
+.env
+.env.*
+node_modules
+kp_homepage.zip
+kp_homepage/

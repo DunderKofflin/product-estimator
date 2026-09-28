@@ -204,8 +204,14 @@
         pointer-events: none;
       }
 
-      .calc-button {
+      .calc-button-row {
         margin-top: 18px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .calc-button {
+        flex: 1 1 auto;
         width: 100%;
         background: linear-gradient(135deg, #123d78, #1d5ba7);
         color: white;
@@ -220,6 +226,21 @@
       }
 
       .calc-button:hover { transform: translateY(-1px); }
+
+      .reset-button {
+        flex: 0 0 auto;
+        background: #f2f4f8;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+      }
+
+      .reset-button:hover { background: #e7ebf2; }
 
       .result-note {
         font-size: 0.82rem;
@@ -287,6 +308,17 @@
         font-size: 0.9rem;
       }
 
+      tr.zero-row {
+        color: #aab2bf;
+        background: #fafbfc;
+      }
+
+      tr.zero-row .chip {
+        background: #f2f4f7;
+        color: #9aa3b0;
+        border-color: #e7eaf0;
+      }
+
       .chip {
         display: inline-block;
         background: #eef5ff;
@@ -344,6 +376,14 @@
         .input-row {
           flex-direction: column;
         }
+
+        .calc-button-row {
+          flex-direction: column;
+        }
+
+        .reset-button {
+          width: 100%;
+        }
       }
 
       @media print {
@@ -391,7 +431,6 @@
         <ul class="notice-list">
           <li>바닥 면적은 필수입력 사항입니다.</li>
           <li>벽체 면적 미 입력시 0㎡로 임의 계산됩니다.</li>
-          <li>바닥, 벽체의 합은 최소 100㎡ 이상이어야 합니다.</li>
           <li>희석제(신나 등)의 경우 사용량은 표기되지 않습니다.</li>
           <li>예상 수량은 실제와 차이가 있을 수 있습니다.</li>
         </ul>
@@ -413,7 +452,10 @@
           </div>
         </div>
 
-        <button class="calc-button" id="calculateBtn">소요량 계산하기</button>
+        <div class="calc-button-row">
+          <button class="calc-button" id="calculateBtn">소요량 계산하기</button>
+          <button class="reset-button" id="resetBtn" type="button">초기화하기</button>
+        </div>
       </div>
 
       <div class="popup-card" id="resultSection">
@@ -435,7 +477,7 @@
                 <th>구분</th>
                 <th id="qtyColumnHeader">소요량</th>
                 <th>포장 규격</th>
-                <th>최종 발주 수량</th>
+                <th>산출수량</th>
               </tr>
             </thead>
             <tbody id="resultTableBody"></tbody>
@@ -581,8 +623,9 @@
         resultTableBody.innerHTML = materialResult.rows.map((row) => {
           const qty = getModeQty(row, qtyMode);
           const finalOrderQty = Math.ceil(qty / row.package_size);
+          const rowClass = finalOrderQty === 0 ? ' class="zero-row"' : '';
           return `
-          <tr>
+          <tr${rowClass}>
             <td><a class="chip chip-link" href="${row.product_url}" target="_blank" rel="noopener">${row.item_name}</a></td>
             <td>${row.category}</td>
             <td>${formatNumber(qty)} ${row.unit}</td>
@@ -621,6 +664,11 @@
       wallAreaInput.addEventListener('input', renderResults);
 
       document.getElementById('calculateBtn').addEventListener('click', renderResults);
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        floorAreaInput.value = '';
+        wallAreaInput.value = '';
+        renderResults();
+      });
       document.getElementById('printBtn').addEventListener('click', () => window.print());
       document.getElementById('pdfBtn').addEventListener('click', () => window.print());
       document.getElementById('copyBtn').addEventListener('click', async () => {
@@ -631,7 +679,7 @@
         const text = rows.map((row) => {
           const qty = getModeQty(row, qtyMode);
           const finalOrderQty = Math.ceil(qty / row.package_size);
-          return `${row.item_name} | ${row.category} | ${QTY_MODE_LABELS[qtyMode]} ${qty.toFixed(2)}${row.unit} | ${row.package_spec} | ${finalOrderQty}`;
+          return `${row.item_name} | ${row.category} | ${QTY_MODE_LABELS[qtyMode]} ${qty.toFixed(2)}${row.unit} | ${row.package_spec} | 산출수량 ${finalOrderQty}`;
         }).join('\n');
 
         try {
